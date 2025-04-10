@@ -1,0 +1,46 @@
+table 'Config - Program settings'
+	lineageTag: 7cb2ae33-712c-451b-9ab8-a6cd635df65b
+
+	measure 'Program Exhaust (with scale)' = SELECTCOLUMNS('Config - Program settings','Config - Program settings'[Program Exhaust]) / [SelectedScale]
+		lineageTag: 1824c5ab-9e90-4fe5-8266-788ad114da27
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Program Attach (with scale)' = SELECTCOLUMNS('Config - Program settings','Config - Program settings'[Program Attach]) / [SelectedScale]
+		lineageTag: d151d0f6-a1f2-4856-adf9-56a219627bf6
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Program Exhaust'
+		formatString: 0
+		lineageTag: 71c305d9-0e7c-435d-ab23-5fe3c1cccd53
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Program Exhaust]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Program Attach'
+		formatString: 0
+		lineageTag: fb4d3f63-84d7-41d8-8c72-d5115818f632
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Program Attach]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Config - Program settings' = calculated
+		mode: import
+		source = ```
+				
+				    DATATABLE (
+				        "Program Exhaust", INTEGER, 
+				        "Program Attach", INTEGER, 
+				        {
+				            {150000000, 50000000}
+				        }
+				    )
+				```
+
+	annotation PBI_Id = 62c8e70c945c465a9297b1c6e5030c25
+

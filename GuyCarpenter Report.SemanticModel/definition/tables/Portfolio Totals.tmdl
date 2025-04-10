@@ -1,0 +1,118 @@
+table 'Portfolio Totals'
+	lineageTag: 9ce5f65f-9c24-4bba-a428-725294d20b12
+
+	column Portfolio
+		dataType: string
+		lineageTag: c815dd92-8db3-4ef6-a997-981295694c34
+		summarizeBy: none
+		sourceColumn: Portfolio
+
+		annotation SummarizationSetBy = Automatic
+
+	column Exhibit
+		dataType: string
+		lineageTag: 6ecb4e20-8685-4607-807c-e9ed85a11934
+		summarizeBy: none
+		sourceColumn: Exhibit
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Previous Year'
+		dataType: double
+		lineageTag: fdbbb49e-fba1-47b0-8670-fd911a8896b4
+		summarizeBy: none
+		sourceColumn: Previous Year
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Current Year'
+		dataType: double
+		lineageTag: 5857a04b-e79a-4832-990b-05b968e122c3
+		summarizeBy: none
+		sourceColumn: Current Year
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Difference = 'Portfolio Totals'[Current Year] - 'Portfolio Totals'[Previous Year]
+		lineageTag: 832d8781-ca19-4f56-b0eb-4d6e885f9d8f
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Client Name'
+		dataType: string
+		lineageTag: fa456a9a-c5d3-496f-866d-1783cb9bc13f
+		summarizeBy: none
+		sourceColumn: Client Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Report Date'
+		dataType: string
+		lineageTag: 242c5dcf-504f-456b-bf4a-6e372b499fdf
+		summarizeBy: none
+		sourceColumn: Report Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Report Name'
+		dataType: string
+		lineageTag: 6f1d15a3-dfcd-403c-93e5-ecd5e18bbda2
+		summarizeBy: none
+		sourceColumn: Report Name
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Portfolio Totals' = m
+		mode: import
+		source = ```
+				let
+				    // Load the Excel file once
+				    Source = Excel.Workbook(File.Contents("C:\Users\farid.shahbalayev\Desktop\Power BI\Guy Carpenter\All Other Comparison Report.xlsx"), null, true),
+				    
+				    // Extract the Cover sheet data
+				    Cover_Sheet = Source{[Item="Cover",Kind="Sheet"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(Cover_Sheet,{{"Column1", type date}, {"Column2", type text}}),
+				    ReportName = #"Changed Type"{13}[Column2],  // Rows are zero-indexed, so row 14 is index 13
+				    
+				    // Extract the Portfolio Totals sheet data
+				    #"Portfolio Totals_Sheet" = Source{[Item="Portfolio Totals",Kind="Sheet"]}[Data],
+				    ClientName = #"Portfolio Totals_Sheet"{2}[Column2],
+				    ReportDate = #"Portfolio Totals_Sheet"{1}[Column1],
+				    
+				    // Promote headers and transform data
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Portfolio Totals_Sheet", [PromoteAllScalars=true]),
+				    #"Removed Columns" = Table.RemoveColumns(#"Promoted Headers",{"Column9", "Column10", "Column11", "Column12"}),
+				    #"Filtered Rows" = Table.SelectRows(#"Removed Columns", each ([Column8] <> null and [Column8] <> "")),
+				    #"Removed Columns1" = Table.RemoveColumns(#"Filtered Rows",{"geocoded"}),
+				    #"Promoted Headers1" = Table.PromoteHeaders(#"Removed Columns1", [PromoteAllScalars=true]),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers1",{{"Portfolio", type text}, {"Column2", type date}, {"Building", type number}, {"Other Structures", Int64.Type}, {"Contents", type number}, {"BI", type number}, {"Total", type number}}),
+				    #"Filled Down" = Table.FillDown(#"Changed Type1",{"Portfolio"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Filled Down",{{"Column2", "Date"}}),
+				    #"Changed Type2" = Table.TransformColumnTypes(#"Renamed Columns",{{"Building", type number}}),
+				    
+				    // Add the client name, report date, and report name as custom columns
+				    #"Added Custom" = Table.AddColumn(#"Changed Type2", "Client Name", each ClientName),
+				    #"Added Custom1" = Table.AddColumn(#"Added Custom", "Report Date", each ReportDate),
+				    #"Added Custom2" = Table.AddColumn(#"Added Custom1", "Report Name", each ReportName),
+				    
+				    // Continue with existing transformations
+				    #"Added Custom3" = Table.AddColumn(#"Added Custom2", "Exhibit", each "Exposures (excl. auto)"),
+				    #"Removed Errors" = Table.RemoveRowsWithErrors(#"Added Custom3", {"Date"}),
+				    #"Removed Columns2" = Table.RemoveColumns(#"Removed Errors",{"Building", "Other Structures", "Contents", "BI"}),
+				    #"Pivoted Column" = Table.Pivot(Table.TransformColumnTypes(#"Removed Columns2", {{"Date", type text}}, "en-US"), List.Distinct(Table.TransformColumnTypes(#"Removed Columns2", {{"Date", type text}}, "en-US")[Date]), "Date", "Total", List.Sum),
+				    #"Renamed Columns1" = Table.RenameColumns(#"Pivoted Column",{{"6/1/2023", "Previous Year"}, {"6/1/2024", "Current Year"}})
+				in
+				    #"Renamed Columns1"
+				```
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

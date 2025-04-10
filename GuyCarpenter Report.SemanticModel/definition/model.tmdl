@@ -1,0 +1,32 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBIDesktopVersion = 2.141.1253.0 (25.03)+74f9999a1e95f78c739f3ea2b96ba340e9ba8729
+
+annotation PBI_QueryOrder = ["Portfolio Totals","Geocoding","Occupancy","Construction","Year Built","Building Height","LoB","Geography","Model Result - Other - HU US LTxSS","Model Result - Other - Other - EQFF US","Model Result"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table 'Portfolio Totals'
+ref table Geocoding
+ref table Occupancy
+ref table Construction
+ref table 'Year Built'
+ref table 'Building Height'
+ref table 'Exhibit 1'
+ref table LoB
+ref table Geography
+ref table 'Config - Details'
+ref table 'Model Result'
+ref table 'Config - CurrencyScale'
+ref table 'Config - Program settings'
+
+ref cultureInfo en-US
+

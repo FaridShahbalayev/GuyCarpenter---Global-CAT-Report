@@ -1,0 +1,698 @@
+table 'Exhibit 1'
+	lineageTag: dd7a8395-4a4b-4d0b-9251-83289e691180
+
+	measure CY = ```
+			
+			SWITCH(
+			    TRUE(),
+			    SELECTEDVALUE('Exhibit 1'[Exhibit]) = "Address Resolution to Street Level",
+			    FORMAT(
+			        DIVIDE(
+			            CALCULATE(
+			                SUMX('Exhibit 1', 'Exhibit 1'[Curr_year]), 
+			                'Exhibit 1'[Category] = "Street / Parcel / Building"
+			            ),
+			            CALCULATE(
+			                SUMX('Exhibit 1', 'Exhibit 1'[Curr_year]), 
+			                'Exhibit 1'[Category] = "Total"
+			            )
+			        ),
+			        "0.00%"
+			    ),
+			    SELECTEDVALUE('Exhibit 1'[Exhibit]) = "Exposures (excl. auto)",
+			    FORMAT(
+			        CALCULATE(SUMX('Exhibit 1', 'Exhibit 1'[Curr_year]), 'Exhibit 1'[Category] <> "Unknown") / 1000000000,
+			        "0.00,,B"
+			    ),
+			    FORMAT(
+			        DIVIDE(
+			            CALCULATE(
+			                SUMX('Exhibit 1', 'Exhibit 1'[Curr_year]), 
+			                'Exhibit 1'[Category] <> "Unknown"
+			            ),
+			            SUMX('Exhibit 1', 'Exhibit 1'[Curr_year]),
+			            0
+			        ),
+			        "0.00%"
+			    )
+			)
+			```
+		lineageTag: bbce509f-eb61-4e75-81fd-44c0fdb34606
+
+	measure PY = ```
+			
+			SWITCH(
+			    TRUE(),
+			    SELECTEDVALUE('Exhibit 1'[Exhibit]) = "Address Resolution to Street Level",
+			    FORMAT(
+			        DIVIDE(
+			            CALCULATE(
+			                SUMX('Exhibit 1', 'Exhibit 1'[Prev_year]), 
+			                'Exhibit 1'[Category] = "Street / Parcel / Building"
+			            ),
+			            CALCULATE(
+			                SUMX('Exhibit 1', 'Exhibit 1'[Prev_year]), 
+			                'Exhibit 1'[Category] = "Total"
+			            )
+			        ),
+			        "0.00%"
+			    ),
+			    SELECTEDVALUE('Exhibit 1'[Exhibit]) = "Exposures (excl. auto)",
+			    FORMAT(
+			        CALCULATE(SUMX('Exhibit 1', 'Exhibit 1'[Prev_year]), 'Exhibit 1'[Category] <> "Unknown") / 1000000000,
+			        "0.00,,B"
+			    ),
+			    FORMAT(
+			        DIVIDE(
+			            CALCULATE(
+			                SUMX('Exhibit 1', 'Exhibit 1'[Prev_year]), 
+			                'Exhibit 1'[Category] <> "Unknown"
+			            ),
+			            SUMX('Exhibit 1', 'Exhibit 1'[Prev_year]),
+			            0
+			        ),
+			        "0.00%"
+			    )
+			)
+			```
+		lineageTag: 290d8a49-c0f5-4cbe-a5c1-b515cad39f2c
+
+	measure +/- = ```
+			
+			SWITCH(
+			    TRUE(),
+			    SELECTEDVALUE('Exhibit 1'[Exhibit]) = "Address Resolution to Street Level",
+			    FORMAT(
+			        DIVIDE(
+			            CALCULATE(
+			                SUMX('Exhibit 1', 'Exhibit 1'[Curr_year]), 
+			                'Exhibit 1'[Category] = "Street / Parcel / Building"
+			            ),
+			            CALCULATE(
+			                SUMX('Exhibit 1', 'Exhibit 1'[Curr_year]), 
+			                'Exhibit 1'[Category] = "Total"
+			            )
+			        ) - DIVIDE(
+			            CALCULATE(
+			                SUMX('Exhibit 1', 'Exhibit 1'[Prev_year]), 
+			                'Exhibit 1'[Category] = "Street / Parcel / Building"
+			            ),
+			            CALCULATE(
+			                SUMX('Exhibit 1', 'Exhibit 1'[Prev_year]), 
+			                'Exhibit 1'[Category] = "Total"
+			            )
+			        ),
+			        "0.00%"
+			    ),
+			    SELECTEDVALUE('Exhibit 1'[Exhibit]) = "Exposures (excl. auto)",
+			    FORMAT(
+			        (CALCULATE(SUMX('Exhibit 1', 'Exhibit 1'[Curr_year]), 'Exhibit 1'[Category] <> "Unknown") / 1000000000) - 
+			        (CALCULATE(SUMX('Exhibit 1', 'Exhibit 1'[Prev_year]), 'Exhibit 1'[Category] <> "Unknown") / 1000000000),
+			        "0.00,,B"
+			    ),
+			    FORMAT(
+			        DIVIDE(
+			            CALCULATE(
+			                SUMX('Exhibit 1', 'Exhibit 1'[Curr_year]), 
+			                'Exhibit 1'[Category] <> "Unknown"
+			            ),
+			            SUMX('Exhibit 1', 'Exhibit 1'[Curr_year]),
+			            0
+			        ) - DIVIDE(
+			            CALCULATE(
+			                SUMX('Exhibit 1', 'Exhibit 1'[Prev_year]), 
+			                'Exhibit 1'[Category] <> "Unknown"
+			            ),
+			            SUMX('Exhibit 1', 'Exhibit 1'[Prev_year]),
+			            0
+			        ),
+			        "0.00%"
+			    )
+			)
+			```
+		lineageTag: 8c7206e9-ed15-4eca-9271-8d6a1adf83e7
+
+	measure CY_Details = ```
+			
+			
+			SWITCH(
+			    TRUE(),
+			    [selected_type] = "Gross", [_CY_Gross] / [SelectedScale],
+			    [selected_type] = "Ground-Up", [_CY_Ground] / [SelectedScale],
+			    [selected_type] = "Net Pre-Cat", [_CY_netcat] / [SelectedScale],
+			    [_CY_TIV] / [SelectedScale]
+			)
+			
+			```
+		formatString: #,0.00
+		lineageTag: ba68c46a-c30b-4b3b-9897-7e3f83826667
+
+	measure PY_Details = ```
+			
+			
+			
+			SWITCH(
+			    TRUE(),
+			    [selected_type] = "Gross", [_PY_Gross] / [SelectedScale],
+			    [selected_type] = "Ground-Up", [_PY_Ground] / [SelectedScale],
+			    [selected_type] = "Net Pre-Cat",[_PY_netcat] / [SelectedScale],
+			    [_PY_TIV] / [SelectedScale]
+			)
+			
+			```
+		formatString: #,0.00
+		lineageTag: c8a8f6f2-9196-416a-aa88-ece3399124c4
+
+	measure _CY_Gross = SUMX('Exhibit 1','Exhibit 1'[CY_Gross])
+		formatString: #,0.00
+		lineageTag: e00469d9-9762-40b5-82a2-e40a905bcf74
+
+	measure _CY_Ground = SUMX('Exhibit 1','Exhibit 1'[CY_Ground-Up])
+		formatString: #,0.00
+		lineageTag: 4751c581-1737-4535-a4a5-215c82205cf7
+
+	measure _CY_netcat = SUMX('Exhibit 1','Exhibit 1'[CY_Net Pre-Cat])
+		formatString: #,0.00
+		lineageTag: f1d6f5bd-0adf-4418-8fce-f05b7ba1d917
+
+	measure _PY_Gross = SUMx('Exhibit 1','Exhibit 1'[PY_Gross])
+		formatString: #,0.00
+		lineageTag: 9e930312-58f8-4f3c-860e-2b957bec95bd
+
+	measure _PY_Ground = SUMx('Exhibit 1','Exhibit 1'[PY_Ground-Up])
+		formatString: #,0.00
+		lineageTag: 8701cbb9-6ba4-477f-924f-753a03d55670
+
+	measure _PY_netcat = SUMX('Exhibit 1','Exhibit 1'[PY_Net Pre-Cat])
+		formatString: #,0.00
+		lineageTag: 9bd414ff-bc8d-4529-9ec8-be274b84ee61
+
+	measure Difference_for_conditional_formatting = IF([CY] > [PY],1,0)
+		lineageTag: 64ca49e9-dcbf-4c22-b559-f32719b80a8a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Change (amount)' = [CY_Details] - [PY_Details]
+		lineageTag: 4e21bc3a-9c2f-4579-a2ce-4aedeedd7f2f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Geocoded_sums_CY = SUMX('Exhibit 1', 'Exhibit 1'[Curr_year]) / [SelectedScale]
+		lineageTag: dc5ecf74-437f-48ff-9b32-a3f8ba9eb54f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Risk_number_CY = SUMX('Exhibit 1', 'Exhibit 1'[CY_risk_number]) / [SelectedScale]
+		lineageTag: a2c40f43-3980-4006-a89b-20f9a1b43459
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Average_CI_CY = SUMX('Exhibit 1', 'Exhibit 1'[CY_Average_SI]) / [SelectedScale]
+		lineageTag: b8f2da04-befc-4bf1-b3a7-504f76cdae97
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Change (%)' = DIVIDE([CY_Details] - [PY_Details], [PY_Details],0)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 866fdd89-282c-42e0-adec-e1bdcb15dbe8
+
+	measure _CY_TIV = SUMX('Exhibit 1','Exhibit 1'[Curr_year])
+		lineageTag: b0b2ed0e-13b0-4d72-a0a9-9fb1c83833d1
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure _PY_TIV = SUMx('Exhibit 1','Exhibit 1'[Prev_year])
+		lineageTag: 67769197-d17f-4dcb-b494-7270c29e5f58
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure ArrowSymbol = ```
+			
+			
+			VAR ArrowSymbol = 
+			    IF(
+			        [Change (%)] > 0, 
+			        "▲", 
+			        IF(
+			            [Change (%)] < 0, 
+			            "▼", 
+			            ""
+			        )
+			    )
+			
+			RETURN
+			
+			 ArrowSymbol & " " & FORMAT([Change (%)], "0.00%")
+			```
+		lineageTag: bae09b5d-a541-4e1d-ae46-1c8c681a2a73
+
+	column Exhibit
+		lineageTag: 5ddddf01-3e51-4ae6-849f-8441bad08486
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Exhibit]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Difference
+		lineageTag: 89df9d22-1ad3-48f7-ac0d-e08f1d2e8e16
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Difference]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Order
+		formatString: 0
+		lineageTag: 3b28a3a5-9e17-428e-aa7d-393a12e7e8fc
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Order]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Difference for visual' = IF('Exhibit 1'[Exhibit] = "Exposures (excl. auto)", FORMAT('Exhibit 1'[Difference]/1000000000,"0.00,,B"),FORMAT('Exhibit 1'[Difference],"0.00%"))
+		lineageTag: facdc47f-335e-4df2-a71f-ae45949a5f2d
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Portfolio
+		lineageTag: 1c14e431-5243-4496-a071-0d8f03ab62a2
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Portfolio]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Prev_year
+		lineageTag: 8a94c560-4eba-48fc-bd55-9a715980252e
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Prev_year]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Curr_year
+		lineageTag: bc2f9812-b618-4e1c-84fe-9f8a0118eabd
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Curr_year]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Category
+		lineageTag: 15891678-ed84-4262-b294-3a35e7e78eef
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Category]
+
+		annotation SummarizationSetBy = Automatic
+
+	column PY_Gross
+		dataType: double
+		lineageTag: 038805b8-07a9-4b44-8893-a4ff8d1cdebc
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [PY_Gross]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column PY_Ground-Up
+		lineageTag: d145456e-0902-4130-888b-958587bc6939
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [PY_Ground-Up]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'PY_Net Pre-Cat'
+		lineageTag: 4d489a90-0328-4a03-8e02-a0b8f041bfec
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [PY_Net Pre-Cat]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CY_Gross
+		lineageTag: 3dcf588b-b0b6-4d50-8fd6-ac02567ec6fd
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [CY_Gross]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CY_Ground-Up
+		lineageTag: bdbaf9ef-a059-446f-8110-4788735eda19
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [CY_Ground-Up]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'CY_Net Pre-Cat'
+		lineageTag: 69f40ed5-270a-45d2-814c-0dc9f135ebeb
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [CY_Net Pre-Cat]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Table
+		lineageTag: df6a6b71-5c51-45b1-80fc-4590e4d217b3
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Table]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Country
+		lineageTag: 7bee92f4-6882-4c40-9b20-c113e2edca6a
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Country]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Client Name'
+		lineageTag: 6d8b45ce-650f-4a58-aef6-7a8df9858cde
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Client Name]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Report Date'
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: b0dc3c48-8748-495f-ad9e-e5eb7a387392
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Report Date]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column PY_risk_number
+		lineageTag: ac0c7a12-6ae4-4f29-9787-b8d4645235a2
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [PY_risk_number]
+
+		annotation SummarizationSetBy = Automatic
+
+	column CY_risk_number
+		lineageTag: e7219fa5-437a-4bfc-b702-644a4e0461a3
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [CY_risk_number]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column PY_Average_SI
+		lineageTag: 98920cc6-9bc2-42a6-b27b-83201fcc59b8
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [PY_Average_SI]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CY_Average_SI
+		lineageTag: ed97f4e2-01be-41e2-adc4-e8cfcd549214
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [CY_Average_SI]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Report Name'
+		lineageTag: d2acd05e-7f18-4e58-86bc-323b21e223e2
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Report Name]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Exhibit 1' = calculated
+		mode: import
+		source = ```
+				DISTINCT(
+				    UNION(
+				        SELECTCOLUMNS(
+				            'Portfolio Totals',
+				            "Category", "All",
+				            "Portfolio", 'Portfolio Totals'[Portfolio],
+				            "Exhibit", 'Portfolio Totals'[Exhibit],
+				            "Prev_year", 'Portfolio Totals'[Previous Year],
+				            "Curr_year", 'Portfolio Totals'[Current Year],
+				            "Difference", [Difference],
+				            "Order", 1,
+				            "PY_Gross", 0,
+				            "PY_Ground-Up",0,
+				            "PY_Net Pre-Cat",0,
+				            "CY_Gross", 0,
+				            "CY_Ground-Up",0,
+				            "CY_Net Pre-Cat",0,
+				            "PY_risk_number", 0,
+				            "CY_risk_number",0,
+				            "PY_Average_SI",0,
+				            "CY_Average_SI",0,
+				            "Table", "Portfolio Totals",
+				            "Country", "",
+				            "Client Name", 'Portfolio Totals'[Client Name],
+				            "Report Date", 'Portfolio Totals'[Report Date],
+				            "Report Name", 'Portfolio Totals'[Report Name]
+				        ),
+				        SELECTCOLUMNS(
+				            'Year Built',
+				            "Category", 'Year Built'[Category],
+				            "Portfolio", 'Year Built'[Portfolio],
+				            "Exhibit", 'Year Built'[Exhibit],
+				            "Prev_year", 'Year Built'[Previous Year],
+				            "Curr_year", 'Year Built'[Current Year],
+				            "Difference", 'Year Built'[Difference (Year Built)],
+				            "Order", 5,
+				            "PY_Gross", 'Year Built'[PY_Gross],
+				            "PY_Ground-Up",'Year Built'[PY_Ground-Up],
+				            "PY_Net Pre-Cat",'Year Built'[PY_Net Pre-Cat],
+				            "CY_Gross", 'Year Built'[CY_Gross],
+				            "CY_Ground-Up",'Year Built'[CY_Ground-Up],
+				            "CY_Net Pre-Cat",'Year Built'[CY_Net Pre-Cat],
+				            "PY_risk_number", 'Year Built'[# Risks (previous year)],
+				            "CY_risk_number",'Year Built'[# Risks (current year)],
+				            "PY_Average_SI",'Year Built'[Average SI (previous year)],
+				            "CY_Average_SI",'Year Built'[Average SI (current year)],
+				            "Table", "Year Built",
+				            "Country", 'Year Built'[Country],
+				            "Client Name", 'Year Built'[Client Name],
+				            "Report Date", 'Year Built'[Report Date],
+				            "Report Name", 'Year Built'[Report Name]
+				        ),
+				        SELECTCOLUMNS(
+				            'Building Height',
+				            "Category", 'Building Height'[Category],
+				            "Portfolio", 'Building Height'[Portfolio],
+				            "Exhibit", 'Building Height'[Exhibit],
+				            "Prev_year", 'Building Height'[Previous Year],
+				            "Curr_year", 'Building Height'[Current Year],
+				            "Difference", 'Building Height'[Difference (Building Height)],
+				            "Order", 6,
+				            "PY_Gross", 'Building Height'[PY_Gross],
+				            "PY_Ground-Up",'Building Height'[PY_Ground-Up],
+				            "PY_Net Pre-Cat",'Building Height'[PY_Net Pre-Cat],
+				            "CY_Gross", 'Building Height'[CY_Gross],
+				            "CY_Ground-Up",'Building Height'[CY_Ground-Up],
+				            "CY_Net Pre-Cat",'Building Height'[CY_Net Pre-Cat],
+				            "PY_risk_number", 'Building Height'[# Risks (previous year)],
+				            "CY_risk_number",'Building Height'[# Risks (current year)],
+				            "PY_Average_SI",'Building Height'[Average SI (previous year)],
+				            "CY_Average_SI",'Building Height'[Average SI (current year)],
+				            "Table", "Building Height",
+				            "Country", 'Building Height'[Country],
+				            "Client Name", 'Building Height'[Client Name],
+				            "Report Date", 'Building Height'[Report Date],
+				            "Report Name", 'Building Height'[Report Name]
+				        ),
+				        SELECTCOLUMNS(
+				            'Construction',
+				            "Category", 'Construction'[Category],
+				            "Portfolio", 'Construction'[Portfolio],
+				            "Exhibit", 'Construction'[Exhibit],
+				            "Prev_year", 'Construction'[Previous Year],
+				            "Curr_year", 'Construction'[Current Year],
+				            "Difference", 'Construction'[Difference (Construction)],
+				            "Order", 4,
+				            "PY_Gross", 'Construction'[PY_Gross],
+				            "PY_Ground-Up",'Construction'[PY_Ground-Up],
+				            "PY_Net Pre-Cat",'Construction'[PY_Net Pre-Cat],
+				            "CY_Gross", 'Construction'[CY_Gross],
+				            "CY_Ground-Up",'Construction'[CY_Ground-Up],
+				            "CY_Net Pre-Cat",'Construction'[CY_Net Pre-Cat],
+				            "Table", "Construction",
+				            "PY_risk_number", 'Construction'[# Risks (previous year)],
+				            "CY_risk_number",'Construction'[# Risks (current year)],
+				            "PY_Average_SI",'Construction'[Average SI (previous year)],
+				            "CY_Average_SI",'Construction'[Average SI (current year)],
+				            "Country", Construction[Country],
+				            "Client Name", 'Construction'[Client Name],
+				            "Report Date", 'Construction'[Report Date],
+				            "Report Name", 'Construction'[Report Name]
+				        ),        
+				        SELECTCOLUMNS(
+				            'Geocoding',
+				            "Category", 'Geocoding'[Category],
+				            "Portfolio", 'Geocoding'[Portfolio],
+				            "Exhibit", 'Geocoding'[Exhibit],
+				            "Prev_year", 'Geocoding'[Previous Year],
+				            "Curr_year", 'Geocoding'[Current Year],
+				            "Difference", 'Geocoding'[Difference (Geocoding)],
+				            "Order", 2,
+				            "PY_Gross", 0,
+				            "PY_Ground-Up",0,
+				            "PY_Net Pre-Cat",0,
+				            "CY_Gross", 0,
+				            "CY_Ground-Up",0,
+				            "CY_Net Pre-Cat",0,
+				            "PY_risk_number", 0,
+				            "CY_risk_number",0,
+				            "PY_Average_SI",0,
+				            "CY_Average_SI",0,
+				            "Table", "Geocoding",
+				            "Country", "",
+				            "Client Name", 'Geocoding'[Client Name],
+				            "Report Date", 'Geocoding'[Report Date],
+				            "Report Name", 'Geocoding'[Report Name]
+				        ),  
+				        SELECTCOLUMNS(
+				            'Occupancy',
+				            "Category", 'Occupancy'[Category],
+				            "Portfolio", 'Occupancy'[Portfolio],
+				            "Exhibit", 'Occupancy'[Exhibit],
+				            "Prev_year", 'Occupancy'[Previous Year],
+				            "Curr_year", 'Occupancy'[Current Year],
+				            "Difference", 'Occupancy'[Difference (Occupancy)],
+				            "Order", 3,
+				            "PY_Gross", 'Occupancy'[PY_Gross],
+				            "PY_Ground-Up",'Occupancy'[PY_Ground-Up],
+				            "PY_Net Pre-Cat",'Occupancy'[PY_Net Pre-Cat],
+				            "CY_Gross", 'Occupancy'[CY_Gross],
+				            "CY_Ground-Up",'Occupancy'[CY_Ground-Up],
+				            "CY_Net Pre-Cat",'Occupancy'[CY_Net Pre-Cat],
+				            "PY_risk_number", 'Occupancy'[# Risks (previous year)],
+				            "CY_risk_number",'Occupancy'[# Risks (current year)],
+				            "PY_Average_SI",'Occupancy'[Average SI (previous year)],
+				            "CY_Average_SI",'Occupancy'[Average SI (current year)],
+				            "Table", "Occupancy",
+				            "Country", Occupancy[Country],
+				            "Client Name", 'Occupancy'[Client Name],
+				            "Report Date", 'Occupancy'[Report Date],
+				            "Report Name", 'Occupancy'[Report Name]
+				        ),
+				        SELECTCOLUMNS(
+				            'LoB',
+				            "Category", LoB[Line of Business],
+				            "Portfolio", 'LoB'[Portfolio],
+				            "Exhibit", 'LoB'[Exhibit],
+				            "Prev_year", 'LoB'[Previous Year],
+				            "Curr_year", 'LoB'[Current Year],
+				            "Difference", 'LoB'[% change risk],
+				            "Order", 7,
+				            "PY_Gross", 'LoB'[PY_Gross],
+				            "PY_Ground-Up",'LoB'[PY_Ground-Up],
+				            "PY_Net Pre-Cat",'LoB'[PY_Net Pre-Cat],
+				            "CY_Gross", 'LoB'[CY_Gross],
+				            "CY_Ground-Up",'LoB'[CY_Ground-Up],
+				            "CY_Net Pre-Cat",'LoB'[CY_Net Pre-Cat],
+				            "PY_risk_number", 'LoB'[# Risks (previous year)],
+				            "CY_risk_number",'LoB'[# Risks (current year)],
+				            "PY_Average_SI",'LoB'[Average SI (previous year)],
+				            "CY_Average_SI",'LoB'[Average SI (current year)],
+				            "Table", "Line of Business",
+				            "Country", "",
+				            "Client Name", 'LoB'[Client Name],
+				            "Report Date", 'LoB'[Report Date],
+				            "Report Name", 'LoB'[Report Name]
+				        ),        
+				        SELECTCOLUMNS(
+				            'Geography',
+				            "Category", Geography[Geography],
+				            "Portfolio", 'Geography'[Portfolio],
+				            "Exhibit", Geography[Exhibit],
+				            "Prev_year", 'Geography'[Previous Year],
+				            "Curr_year", 'Geography'[Current Year],
+				            "Difference", Geography[Difference (Geography)],
+				            "Order", 8,
+				            "PY_Gross", 0,
+				            "PY_Ground-Up",0,
+				            "PY_Net Pre-Cat",0,
+				            "CY_Gross", 0,
+				            "CY_Ground-Up",0,
+				            "CY_Net Pre-Cat",0,
+				            "PY_risk_number", 0,
+				            "CY_risk_number",0,
+				            "PY_Average_SI",0,
+				            "CY_Average_SI",0,
+				            "Table", "Geography",
+				            "Country", Geography[Country],
+				            "Client Name", 'Geography'[Client Name],
+				            "Report Date", 'Geography'[Report Date],
+				            "Report Name", 'Geography'[Report Name]
+				        ),        
+				        SELECTCOLUMNS(
+				            'Model Result',
+				            "Category", 'Model Result'[Return Period],
+				            "Portfolio", 'Model Result'[Portfolio],
+				            "Exhibit", 'Model Result'[Exhibit],
+				            "Prev_year", 0,
+				            "Curr_year", 0,
+				            "Difference", 0,
+				            "Order", 9,
+				            "PY_Gross", 'Model Result'[PY_Gross Loss],
+				            "PY_Ground-Up",'Model Result'[PY_Ground Up Loss],
+				            "PY_Net Pre-Cat",'Model Result'[PY_Net Loss],
+				            "CY_Gross", 'Model Result'[CY_Gross Loss],
+				            "CY_Ground-Up",'Model Result'[CY_Ground Up Loss],
+				            "CY_Net Pre-Cat",'Model Result'[CY_Net Loss],
+				            "PY_risk_number", 0,
+				            "CY_risk_number",0,
+				            "PY_Average_SI",0,
+				            "CY_Average_SI",0,
+				            "Table", "Geography",
+				            "Country", "",
+				            "Client Name", 'Model Result'[Client Name],
+				            "Report Date", 'Model Result'[Report Date],
+				            "Report Name", 'Model Result'[Report Name]
+				        )
+				)
+				)
+				```
+
+	annotation PBI_Id = 7382a79f382b4f5e9a3b0cad66008084
+

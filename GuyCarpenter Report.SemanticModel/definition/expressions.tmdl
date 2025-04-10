@@ -1,0 +1,92 @@
+expression 'Model Result - Other - HU US LTxSS' = ```
+		let
+		    // Load the Excel file once
+		    Source = Excel.Workbook(File.Contents("C:\Users\farid.shahbalayev\Desktop\Power BI\Guy Carpenter\All Other Comparison Report.xlsx"), null, false),
+		    
+		    // Load the Model Results sheet
+		    #"Model Results_sheet" = Source{[Item="Model Results",Kind="Sheet"]}[Data],
+		    
+		    // Extract the client name from cell B3 and report date from cell A2
+		    ClientName = #"Model Results_sheet"{2}[Column2],
+		    ReportDate = #"Model Results_sheet"{1}[Column1],
+		    
+		    // Extract the report name from the Cover sheet, 2nd column, 14th row
+		    Cover_Sheet = Source{[Item="Cover",Kind="Sheet"]}[Data],
+		    Cover_Changed_Type = Table.TransformColumnTypes(Cover_Sheet,{{"Column1", type date}, {"Column2", type text}}),
+		    ReportName = Cover_Changed_Type{13}[Column2],  // Rows are zero-indexed, so row 14 is index 13
+		    
+		    // Remove top and bottom rows
+		    #"Removed Top Rows" = Table.Skip(#"Model Results_sheet", 28),
+		    #"Removed Bottom Rows" = Table.RemoveLastN(#"Removed Top Rows", 24),
+		    
+		    // Select relevant columns
+		    #"Removed Other Columns" = Table.SelectColumns(#"Removed Bottom Rows", {"Column2", "Column3", "Column4", "Column5", "Column6", "Column7", "Column8", "Column9", "Column10", "Column11"}),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Removed Other Columns",{{"Column2", type any}, {"Column3", type number}, {"Column4", type number}, {"Column5", type number}, {"Column6", type number}, {"Column7", type number}, {"Column8", type number}, {"Column9", type number}, {"Column10", type number}, {"Column11", type number}}),
+		    #"Removed Other Columns1" = Table.SelectColumns(#"Changed Type",{"Column2", "Column3", "Column4", "Column6", "Column7", "Column9", "Column10"}),
+		    
+		    // Rename columns
+		    #"Renamed Columns" = Table.RenameColumns(#"Removed Other Columns1",{{"Column2", "Return Period"}, {"Column3", "PY_Ground Up Loss"}, {"Column4", "CY_Ground Up Loss"}, {"Column6", "PY_Gross Loss"}, {"Column7", "CY_Gross Loss"}, {"Column9", "PY_Net Loss"}, {"Column10", "CY_Net Loss"}}),
+		    
+		    // Add custom columns for client name, report date, report name, and portfolio
+		    #"Added Custom" = Table.AddColumn(#"Renamed Columns", "Client Name", each ClientName),
+		    #"Added Custom1" = Table.AddColumn(#"Added Custom", "Report Date", each ReportDate),
+		    #"Added Custom2" = Table.AddColumn(#"Added Custom1", "Report Name", each ReportName),
+		    #"Added Custom3" = Table.AddColumn(#"Added Custom2", "Portfolio", each "Other - HU US LTxSS"),
+		    
+		    // Add Exhibit column
+		    #"Added Custom4" = Table.AddColumn(#"Added Custom3", "Exhibit", each "Model Result")
+		in
+		    #"Added Custom4"
+		```
+	lineageTag: 580250ed-e76b-48e4-9bc4-8e4f5527804f
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression 'Model Result - Other - Other - EQFF US' = ```
+		let
+		    // Load the Excel file once
+		    Source = Excel.Workbook(File.Contents("C:\Users\farid.shahbalayev\Desktop\Power BI\Guy Carpenter\All Other Comparison Report.xlsx"), null, false),
+		    
+		    // Load the Model Results sheet
+		    #"Model Results_sheet" = Source{[Item="Model Results",Kind="Sheet"]}[Data],
+		    
+		    // Extract the client name from cell B3 and report date from cell A2
+		    ClientName = #"Model Results_sheet"{2}[Column2],
+		    ReportDate = #"Model Results_sheet"{1}[Column1],
+		    
+		    // Extract the report name from the Cover sheet, 2nd column, 14th row
+		    Cover_Sheet = Source{[Item="Cover",Kind="Sheet"]}[Data],
+		    Cover_Changed_Type = Table.TransformColumnTypes(Cover_Sheet,{{"Column1", type date}, {"Column2", type text}}),
+		    ReportName = Cover_Changed_Type{13}[Column2],  // Rows are zero-indexed, so row 14 is index 13
+		    
+		    // Remove top and bottom rows
+		    #"Removed Top Rows" = Table.Skip(#"Model Results_sheet", 47),
+		    #"Removed Bottom Rows" = Table.RemoveLastN(#"Removed Top Rows", 5),
+		    
+		    // Select relevant columns
+		    #"Removed Other Columns" = Table.SelectColumns(#"Removed Bottom Rows", {"Column2", "Column3", "Column4", "Column5", "Column6", "Column7", "Column8", "Column9", "Column10", "Column11"}),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Removed Other Columns",{{"Column2", type any}, {"Column3", type number}, {"Column4", type number}, {"Column5", type number}, {"Column6", type number}, {"Column7", type number}, {"Column8", type number}, {"Column9", type number}, {"Column10", type number}, {"Column11", type number}}),
+		    #"Removed Other Columns1" = Table.SelectColumns(#"Changed Type",{"Column2", "Column3", "Column4", "Column6", "Column7", "Column9", "Column10"}),
+		    
+		    // Rename columns
+		    #"Renamed Columns" = Table.RenameColumns(#"Removed Other Columns1",{{"Column2", "Return Period"}, {"Column3", "PY_Ground Up Loss"}, {"Column4", "CY_Ground Up Loss"}, {"Column6", "PY_Gross Loss"}, {"Column7", "CY_Gross Loss"}, {"Column9", "PY_Net Loss"}, {"Column10", "CY_Net Loss"}}),
+		    
+		    // Add custom columns for client name, report date, report name, and portfolio
+		    #"Added Custom" = Table.AddColumn(#"Renamed Columns", "Client Name", each ClientName),
+		    #"Added Custom1" = Table.AddColumn(#"Added Custom", "Report Date", each ReportDate),
+		    #"Added Custom2" = Table.AddColumn(#"Added Custom1", "Report Name", each ReportName),
+		    #"Added Custom3" = Table.AddColumn(#"Added Custom2", "Portfolio", each "Other - EQFF US"),
+		
+		    // Add Exhibit column
+		    #"Added Custom4" = Table.AddColumn(#"Added Custom3", "Exhibit", each "Model Result")
+		in
+		    #"Added Custom4"
+		```
+	lineageTag: 47b40cfb-0e0b-4b1f-998d-65d0373eddfb
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

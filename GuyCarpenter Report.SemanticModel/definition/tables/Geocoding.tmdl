@@ -1,0 +1,179 @@
+table Geocoding
+	lineageTag: e20b03e5-2f52-4a6f-a84d-89e5ea14a3f7
+
+	column Category
+		dataType: string
+		lineageTag: 7dd665fd-a439-46cd-af18-4c984d3095ec
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Previous Year'
+		dataType: double
+		lineageTag: cb04ef9a-f5de-40f7-9750-f20b977fb663
+		summarizeBy: sum
+		sourceColumn: Previous Year
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Current Year'
+		dataType: double
+		lineageTag: ddf61f6f-f1c4-4077-a1ce-33186d795239
+		summarizeBy: sum
+		sourceColumn: Current Year
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Exhibit
+		dataType: string
+		lineageTag: fe7c1084-706a-4bd7-9aca-db3b6654cf81
+		summarizeBy: none
+		sourceColumn: Exhibit
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Previous Year (Geocoding)' = ```
+			
+			
+			DIVIDE(
+			    SUMX(
+			    FILTER('Geocoding', Geocoding[Category]="Street / Parcel / Building"),
+			    Geocoding[Previous Year]
+			) 
+			,
+			SUMX(
+			    FILTER('Geocoding', Geocoding[Category]="Total"),
+			    Geocoding[Previous Year]
+			) 
+			)
+			```
+		lineageTag: d8bd066f-50bd-46ff-9608-1ca359608c2e
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Difference (Geocoding)' =
+			
+			[Current Year (Geocoding)] - [Previous Year (Geocoding)]
+		lineageTag: da3bfb7f-9823-4720-9cfd-9a4e0355c3b8
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Current Year (Geocoding)' = ```
+			
+			
+			DIVIDE(
+			    SUMX(
+			    FILTER('Geocoding', Geocoding[Category]="Street / Parcel / Building"),
+			    Geocoding[Current Year]
+			) 
+			,
+			SUMX(
+			    FILTER('Geocoding', Geocoding[Category]="Total"),
+			    Geocoding[Current Year]
+			) 
+			)
+			```
+		lineageTag: 623ec501-cdd9-4a0c-825b-162834b9ed3d
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Portfolio
+		dataType: string
+		lineageTag: 42e2845c-3810-45bc-af06-522af5ac0a24
+		summarizeBy: none
+		sourceColumn: Portfolio
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Client Name'
+		dataType: string
+		lineageTag: 52ec0f64-6cee-4ac9-9e1c-e440591c99fe
+		summarizeBy: none
+		sourceColumn: Client Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Report Date'
+		dataType: string
+		lineageTag: 9d658c33-ffb0-4701-b066-a98fbc1ccab7
+		summarizeBy: none
+		sourceColumn: Report Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Report Name'
+		dataType: string
+		lineageTag: 2b07c19e-d8a0-4f44-abec-0a07a3a0d439
+		summarizeBy: none
+		sourceColumn: Report Name
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Geocoding = m
+		mode: import
+		source = ```
+				let
+				    // Load the Excel file
+				    Source = Excel.Workbook(File.Contents("C:\Users\farid.shahbalayev\Desktop\Power BI\Guy Carpenter\All Other Comparison Report.xlsx"), null, false),
+				    
+				    // Load the Geocoding sheet
+				    Geocoding_sheet = Source{[Item="Geocoding",Kind="Sheet"]}[Data],
+				    
+				    // Extract the client name from cell B3 and report date from cell A2
+				    ClientName = Geocoding_sheet{2}[Column2],
+				    ReportDate = Geocoding_sheet{1}[Column1],
+				    
+				    // Extract the report name from the Cover sheet, 2nd column, 14th row
+				    Cover_Sheet = Source{[Item="Cover",Kind="Sheet"]}[Data],
+				    Cover_Changed_Type = Table.TransformColumnTypes(Cover_Sheet,{{"Column1", type date}, {"Column2", type text}}),
+				    ReportName = Cover_Changed_Type{13}[Column2],  // Rows are zero-indexed, so row 14 is index 13
+				    
+				    // Remove top and bottom rows
+				    #"Removed Top Rows" = Table.Skip(Geocoding_sheet, 14),
+				    #"Removed Bottom Rows" = Table.RemoveLastN(#"Removed Top Rows", 5),
+				    
+				    // Select relevant columns
+				    #"Removed Other Columns" = Table.SelectColumns(#"Removed Bottom Rows", {"Column2", "Column3", "Column5", "Column6", "Column7", "Column8", "Column9", "Column10", "Column11", "Column12"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Removed Other Columns",{{"Column2", type text}, {"Column3", type text}, {"Column5", type any}, {"Column6", type any}, {"Column7", type any}, {"Column8", type any}, {"Column9", type any}, {"Column10", type any}, {"Column11", type any}, {"Column12", type any}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column5", "Column7", "Column8", "Column10", "Column11", "Column12"}),
+				    
+				    // Filter rows
+				    #"Filtered Rows" = Table.SelectRows(#"Removed Columns", each ([Column9] <> null and [Column9] <> "Geocoded Sums Insured")),
+				    
+				    // Rename columns
+				    #"Renamed Columns" = Table.RenameColumns(#"Filtered Rows",{{"Column3", "Category"}, {"Column6", "Previous Year"}, {"Column9", "Current Year"}, {"Column2", "Portfolio"}}),
+				    #"Filled Down" = Table.FillDown(#"Renamed Columns",{"Portfolio"}),
+				    
+				    // Add custom columns for client name, report date, and report name
+				    #"Added Custom" = Table.AddColumn(#"Filled Down", "Client Name", each ClientName),
+				    #"Added Custom1" = Table.AddColumn(#"Added Custom", "Report Date", each ReportDate),
+				    #"Added Custom2" = Table.AddColumn(#"Added Custom1", "Report Name", each ReportName),
+				    
+				    // Add Exhibit column
+				    #"Added Custom3" = Table.AddColumn(#"Added Custom2", "Exhibit", each "Address Resolution to Street Level")
+				in
+				    #"Added Custom3"
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,39 @@
+table 'Config - CurrencyScale'
+	lineageTag: 6be186a8-3433-4153-99d9-f9eb07cc86ab
+
+	measure SelectedScale =
+			
+			SWITCH(
+			    SELECTEDVALUE('Config - CurrencyScale'[Scale]),
+			    "Thousands (K)", 1000,
+			    "Millions (M)", 1000000,
+			    "Billions (B)", 1000000000,
+			    "None", 1, 1
+			)
+		formatString: 0
+		lineageTag: 67617578-474d-4c5a-9f66-e2c7e28e5963
+
+	column Scale
+		lineageTag: d28d7041-48b4-4715-ab77-bcee512d6da9
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Scale]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Config - CurrencyScale' = calculated
+		mode: import
+		source =
+				
+				DATATABLE(
+				    "Scale", STRING,
+				    {
+				        {"Thousands (K)"},
+				        {"Millions (M)"},
+				        {"Billions (B)"},
+				        {"None"}
+				    }
+				)
+
+	annotation PBI_Id = 6d3a06bcedf646008ba3b21c6fe9175b
+

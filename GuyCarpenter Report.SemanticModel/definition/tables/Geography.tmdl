@@ -1,0 +1,167 @@
+table Geography
+	lineageTag: 0e80e570-32f7-4f04-ab2d-ba45dc753733
+
+	measure '% change' = ```
+			DIVIDE(SUM(Geography[Current Year]) - SUM(Geography[Previous Year]), SUM(Geography[Previous Year]),0) 
+			```
+		lineageTag: 2fe788b7-c595-46c2-97c6-70b4de0983a8
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Portfolio
+		dataType: string
+		lineageTag: 26a3e1c0-8b73-4b24-87dd-6dbf6c93810b
+		summarizeBy: none
+		sourceColumn: Portfolio
+
+		annotation SummarizationSetBy = Automatic
+
+	column Country
+		dataType: string
+		lineageTag: 71e230ed-4084-464e-9f4a-77350dec0453
+		summarizeBy: none
+		sourceColumn: Country
+
+		annotation SummarizationSetBy = Automatic
+
+	column Geography
+		dataType: string
+		lineageTag: 7e848f78-7576-4319-a209-8af11965538e
+		summarizeBy: none
+		sourceColumn: Geography
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Previous Year'
+		dataType: double
+		lineageTag: cb8c3a9b-ed7e-4f6a-8cf8-a4531308d383
+		summarizeBy: sum
+		sourceColumn: Previous Year
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Current Year'
+		dataType: double
+		lineageTag: 57ab114a-5240-4b4a-bcfc-60baf1256429
+		summarizeBy: sum
+		sourceColumn: Current Year
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Client Name'
+		dataType: string
+		lineageTag: a376be91-a47b-48f1-a605-a2f6bb856218
+		summarizeBy: none
+		sourceColumn: Client Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Report Date'
+		dataType: string
+		lineageTag: b9043784-11e3-4bae-b77d-9b7b943d1b39
+		summarizeBy: none
+		sourceColumn: Report Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Difference (Geography)' = Geography[Current Year] - Geography[Previous Year]
+		lineageTag: aaac0046-c9ce-4074-99a6-05fe9eb17017
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Report Name'
+		dataType: string
+		lineageTag: e9fec4e5-6a18-4cbc-98d9-7bc6406ef0c0
+		summarizeBy: none
+		sourceColumn: Report Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Exhibit
+		dataType: string
+		lineageTag: fe269d2e-d7aa-46bf-a981-bf98f52b6399
+		summarizeBy: none
+		sourceColumn: Exhibit
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Geography = m
+		mode: import
+		source = ```
+				let
+				    // Load the Excel file
+				    Source = Excel.Workbook(File.Contents("C:\Users\farid.shahbalayev\Desktop\Power BI\Guy Carpenter\All Other Comparison Report.xlsx"), null, false),
+				    
+				    // Load the Geography sheet
+				    Geography_sheet = Source{[Item="Geography",Kind="Sheet"]}[Data],
+				    
+				    // Extract the client name from cell B3 and report date from cell A2
+				    ClientName = Geography_sheet{2}[Column2],
+				    ReportDate = Geography_sheet{1}[Column1],
+				    
+				    // Extract the report name from the Cover sheet, 2nd column, 14th row
+				    Cover_Sheet = Source{[Item="Cover",Kind="Sheet"]}[Data],
+				    Cover_Changed_Type = Table.TransformColumnTypes(Cover_Sheet,{{"Column1", type date}, {"Column2", type text}}),
+				    ReportName = Cover_Changed_Type{13}[Column2],  // Rows are zero-indexed, so row 14 is index 13
+				    
+				    // Filter out null and whitespace values
+				    FilterNullAndWhitespace = each List.Select(_, each _ <> null and (not (_ is text) or Text.Trim(_) <> "")),
+				    
+				    // Add custom columns to identify empty rows and sections
+				    #"Added Custom" = Table.AddColumn(Geography_sheet, "IsEmptyRow", each try List.IsEmpty(FilterNullAndWhitespace(Record.FieldValues(_))) otherwise false),
+				    #"Added Index" = Table.AddIndexColumn(#"Added Custom", "Index", -1),
+				    #"Added Custom1" = Table.AddColumn(#"Added Index", "Section", each if [IsEmptyRow] then -1 else if try #"Added Index"[IsEmptyRow]{[Index]} otherwise true then [Index] else null),
+				    
+				    // Remove blank rows and fill down section values
+				    #"Removed Blank Rows" = Table.SelectRows(#"Added Custom1", each not [IsEmptyRow]),
+				    #"Filled Down" = Table.FillDown(#"Removed Blank Rows", {"Section"}),
+				    
+				    // Group rows by section and select the relevant group
+				    #"Grouped Rows" = Table.Group(#"Filled Down", {"Section"}, {{"Rows", each _}}, GroupKind.Local),
+				    #"Selected Group" = #"Grouped Rows"[Rows]{1},
+				    
+				    // Remove unnecessary columns and rows
+				    #"Removed Columns" = Table.RemoveColumns(#"Selected Group", {"IsEmptyRow", "Index", "Section"}),
+				    #"Removed Top Rows" = Table.Skip(#"Removed Columns", each try List.IsEmpty(List.Skip(FilterNullAndWhitespace(Record.FieldValues(_)), 2)) otherwise false),
+				    #"Transposed Table" = Table.Transpose(#"Removed Top Rows"),
+				    #"Removed Top Rows1" = Table.Skip(#"Transposed Table", each try List.IsEmpty(List.Skip(FilterNullAndWhitespace(Record.FieldValues(_)), 1)) otherwise false),
+				    #"Transposed Table1" = Table.Transpose(#"Removed Top Rows1"),
+				    #"Removed Other Columns" = Table.SelectColumns(#"Transposed Table1", List.Select(Table.ColumnNames(#"Transposed Table1"), each try not List.IsEmpty(FilterNullAndWhitespace(Table.Column(#"Transposed Table1", _))) otherwise true)),
+				    
+				    // Change column types
+				    #"Changed Type" = Table.TransformColumnTypes(#"Removed Other Columns",{{"Column1", type text}, {"Column2", type text}, {"Column3", type text}, {"Column4", type any}, {"Column5", type any}, {"Column6", type any}, {"Column7", type any}, {"Column8", type any}, {"Column9", type any}, {"Column10", type any}, {"Column11", type any}, {"Column12", type any}, {"Column13", type any}, {"Column14", type any}, {"Column15", type any}, {"Column16", type any}, {"Column17", type any}, {"Column18", type any}, {"Column19", type text}, {"Column20", type text}, {"Column21", type text}}),
+				    #"Filled Down1" = Table.FillDown(#"Changed Type",{"Column1"}),
+				    
+				    // Filter rows and promote headers
+				    #"Filtered Rows" = Table.SelectRows(#"Filled Down1", each ([Column2] <> null)),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Filtered Rows", [PromoteAllScalars=true]),
+				    
+				    // Change column types
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"Portfolio", type text}, {"Country", type text}, {"Geography", type text}, {"Geocoded Sums Insured", type number}, {"# Risks (Locations)", Int64.Type}, {"Average SI", type any}, {"Ground-Up", Int64.Type}, {"Gross", Int64.Type}, {"Net Pre-Cat", Int64.Type}, {"Geocoded Sums Insured_1", type number}, {"# Risks (Locations)_2", Int64.Type}, {"Average SI_3", type any}, {"Ground-Up_4", Int64.Type}, {"Gross_5", Int64.Type}, {"Net Pre-Cat_6", Int64.Type}, {"Geocoded Sums Insured_7", type any}, {"# Risks (Locations)_8", type any}, {"Average SI_9", type any}, {"Ground-Up_10", type text}, {"Gross_11", type text}, {"Net Pre-Cat_12", type text}}),
+				    
+				    // Rename columns
+				    #"Renamed Columns" = Table.RenameColumns(#"Changed Type1",{{"Geocoded Sums Insured", "Previous Year"}, {"Geocoded Sums Insured_1", "Current Year"}, {"Geocoded Sums Insured_7", "Change %"}}),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Renamed Columns",{"Change %", "Portfolio", "Country", "Geography", "Previous Year", "Current Year"}),
+				    #"Reordered Columns" = Table.ReorderColumns(#"Removed Other Columns1",{"Portfolio", "Country", "Geography", "Previous Year", "Current Year", "Change %"}),
+				    #"Removed Columns1" = Table.RemoveColumns(#"Reordered Columns",{"Change %"}),
+				    
+				    // Add custom columns for client name, report date, report name, and exhibit
+				    #"Added Custom2" = Table.AddColumn(#"Removed Columns1", "Client Name", each ClientName),
+				    #"Added Custom3" = Table.AddColumn(#"Added Custom2", "Report Date", each ReportDate),
+				    #"Added Custom4" = Table.AddColumn(#"Added Custom3", "Report Name", each ReportName),
+				    #"Added Custom5" = Table.AddColumn(#"Added Custom4", "Exhibit", each "Geography")
+				in
+				    #"Added Custom5"
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

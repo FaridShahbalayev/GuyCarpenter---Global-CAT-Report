@@ -1,0 +1,4 @@
+relationship AutoDetected_4ba756f3-5811-4182-9137-06f62c7405b9
+	fromColumn: 'Model Result'.Portfolio
+	toColumn: 'Portfolio Totals'.Portfolio
+

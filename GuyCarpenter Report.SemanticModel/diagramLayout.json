@@ -1,0 +1,190 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 694.66668701171875,
+        "y": 100
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 390,
+            "y": 0
+          },
+          "nodeIndex": "Geocoding",
+          "nodeLineageTag": "e20b03e5-2f52-4a6f-a84d-89e5ea14a3f7",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 8
+        },
+        {
+          "location": {
+            "x": 1187,
+            "y": 0
+          },
+          "nodeIndex": "Portfolio Totals",
+          "nodeLineageTag": "9ce5f65f-9c24-4bba-a428-725294d20b12",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 1
+        },
+        {
+          "location": {
+            "x": 918,
+            "y": 0
+          },
+          "nodeIndex": "Occupancy",
+          "nodeLineageTag": "8b7dd1a6-1e2e-4bfe-a636-4caff5fb9b74",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 2
+        },
+        {
+          "location": {
+            "x": 670,
+            "y": 247
+          },
+          "nodeIndex": "Construction",
+          "nodeLineageTag": "1b0d2889-4478-4598-99a2-1c88c27aa501",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 3
+        },
+        {
+          "location": {
+            "x": 650,
+            "y": 0
+          },
+          "nodeIndex": "Year Built",
+          "nodeLineageTag": "67a13fb2-e136-46cd-b317-2d748467fbb7",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 4
+        },
+        {
+          "location": {
+            "x": 365,
+            "y": 337
+          },
+          "nodeIndex": "Building Height",
+          "nodeLineageTag": "462358c3-a0d3-4159-9fc8-20677b0c3f5a",
+          "size": {
+            "height": 204,
+            "width": 234
+          },
+          "zIndex": 5
+        },
+        {
+          "location": {
+            "x": 1401.3333435058594,
+            "y": 376
+          },
+          "nodeIndex": "Exhibit 1",
+          "nodeLineageTag": "dd7a8395-4a4b-4d0b-9251-83289e691180",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 6
+        },
+        {
+          "location": {
+            "x": 1175,
+            "y": 641
+          },
+          "nodeIndex": "LoB",
+          "nodeLineageTag": "13836774-721f-4dfb-abf8-8b69005ad186",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 7
+        },
+        {
+          "location": {
+            "x": 636,
+            "y": 537.5
+          },
+          "nodeIndex": "Geography",
+          "nodeLineageTag": "0e80e570-32f7-4f04-ab2d-ba45dc753733",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1106,
+            "y": 332.5
+          },
+          "nodeIndex": "Config - Details",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 823,
+            "y": 140.5
+          },
+          "nodeIndex": "Model Result",
+          "nodeLineageTag": "a9b34173-69c5-4555-abdb-1e24707a0c2d",
+          "size": {
+            "height": 272,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 769,
+            "y": 251.5
+          },
+          "nodeIndex": "Config - CurrencyScale",
+          "nodeLineageTag": "6be186a8-3433-4153-99d9-f9eb07cc86ab",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 849,
+            "y": 223.5
+          },
+          "nodeIndex": "Config - Program settings",
+          "nodeLineageTag": "7cb2ae33-712c-451b-9ab8-a6cd635df65b",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 100,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

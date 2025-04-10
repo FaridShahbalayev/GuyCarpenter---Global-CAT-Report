@@ -1,0 +1,28 @@
+table 'Config - Details'
+	lineageTag: 5cd98fe8-2ca5-48e5-8a07-73c18faa32e8
+
+	measure selected_type = SELECTEDVALUE('Config - Details'[Type])
+		lineageTag: d72391db-9b34-451d-a8f0-5041a4198f3a
+
+	column Type
+		lineageTag: 19611327-69f7-4bf2-af1a-ea266e02b927
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Type]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Config - Details' = calculated
+		mode: import
+		source =
+				DATATABLE (
+				    "Type", STRING,
+				    {
+				        {"Gross"},
+				        {"Ground-Up"},
+				        {"Net Pre-Cat"}
+				    }
+				)
+
+	annotation PBI_Id = 5c901df15db74b16afbdc59bd3fc5736
+

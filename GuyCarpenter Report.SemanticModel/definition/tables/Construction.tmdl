@@ -1,0 +1,300 @@
+table Construction
+	lineageTag: 1b0d2889-4478-4598-99a2-1c88c27aa501
+
+	column Portfolio
+		dataType: string
+		lineageTag: 2d0931f3-7570-45e2-b1da-f0d90a16d557
+		summarizeBy: none
+		sourceColumn: Portfolio
+
+		annotation SummarizationSetBy = Automatic
+
+	column Country
+		dataType: string
+		lineageTag: 98ac3192-32b4-4079-934f-cc647cce8aef
+		summarizeBy: none
+		sourceColumn: Country
+
+		annotation SummarizationSetBy = Automatic
+
+	column Category
+		dataType: string
+		lineageTag: fdbe960a-d446-4702-a086-7527567e13d0
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Previous Year'
+		dataType: double
+		lineageTag: 9dc1a03e-a04a-4379-aa1c-d07767f4932f
+		summarizeBy: sum
+		sourceColumn: Previous Year
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Current Year'
+		dataType: double
+		lineageTag: 9672131b-e1ae-434a-81c8-ff33bdaad4df
+		summarizeBy: sum
+		sourceColumn: Current Year
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Exhibit
+		dataType: string
+		lineageTag: ddc0f143-58ba-4660-80cb-6056463bd88e
+		summarizeBy: none
+		sourceColumn: Exhibit
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Current Year (Construction)' = ```
+			
+			
+			DIVIDE(
+			    SUMX(
+			    FILTER('Construction', Construction[Category]<>"Unknown"),
+			    Construction[Current Year]
+			) 
+			,
+			SUM(Construction[Current Year]
+			))
+			```
+		lineageTag: 972cee8e-1450-4d90-8c5b-9328bde91d2e
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Difference (Construction)' =
+			
+			[Current Year (Construction)] - [Previous Year (Construction)]
+		lineageTag: 45fcc4bb-b640-44f8-b259-5e9f0379e5be
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Previous Year (Construction)' = ```
+			
+			
+			DIVIDE(
+			    SUMX(
+			    FILTER('Construction', Construction[Category]<>"Unknown"),
+			    Construction[Previous Year]
+			) 
+			,
+			SUM(Construction[Previous Year])
+			)
+			```
+		lineageTag: 825a6a82-4bfd-4aac-8000-d8569b6c1650
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column PY_Ground-Up
+		dataType: double
+		lineageTag: 34fa99bc-4ca9-49da-9d60-9162467dd826
+		summarizeBy: sum
+		sourceColumn: PY_Ground-Up
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column PY_Gross
+		dataType: double
+		lineageTag: 27b70196-821e-4eb4-b1eb-0b94e401c766
+		summarizeBy: sum
+		sourceColumn: PY_Gross
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'PY_Net Pre-Cat'
+		dataType: double
+		lineageTag: 90dab6ba-d052-4bc1-83f5-cc352bf648fe
+		summarizeBy: sum
+		sourceColumn: PY_Net Pre-Cat
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Client Name'
+		dataType: string
+		lineageTag: 1363fe97-32df-4e70-95d5-b9b783ebdd11
+		summarizeBy: none
+		sourceColumn: Client Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Report Date'
+		dataType: string
+		lineageTag: f6fd7d37-88bd-499f-8efc-81716250aa88
+		summarizeBy: none
+		sourceColumn: Report Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column '# Risks (previous year)'
+		dataType: double
+		lineageTag: ac76e1c6-63a4-4421-aa06-202cc5a160c3
+		summarizeBy: sum
+		sourceColumn: # Risks (previous year)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Average SI (previous year)'
+		dataType: double
+		lineageTag: da79ce27-ddad-4b1c-a48c-26fefe1cb23b
+		summarizeBy: sum
+		sourceColumn: Average SI (previous year)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column '# Risks (current year)'
+		dataType: double
+		lineageTag: b5b731d6-1fce-48a9-8891-20ec8fc720d1
+		summarizeBy: sum
+		sourceColumn: # Risks (current year)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Average SI (current year)'
+		dataType: double
+		lineageTag: 8b16185b-565e-4eb5-8fff-80a4e57bf8cb
+		summarizeBy: sum
+		sourceColumn: Average SI (current year)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CY_Ground-Up
+		dataType: double
+		lineageTag: 69f1ec81-bb4c-47c0-88be-8bf8fac30b56
+		summarizeBy: sum
+		sourceColumn: CY_Ground-Up
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CY_Gross
+		dataType: double
+		lineageTag: f1a9b56c-9c34-4d18-be0e-b4e95a72d1c4
+		summarizeBy: sum
+		sourceColumn: CY_Gross
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'CY_Net Pre-Cat'
+		dataType: double
+		lineageTag: 53c3a02d-b93a-4726-8b51-d9c7f562a27a
+		summarizeBy: sum
+		sourceColumn: CY_Net Pre-Cat
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Report Name'
+		dataType: string
+		lineageTag: b36328c6-3a63-4049-8d98-65813842834d
+		summarizeBy: none
+		sourceColumn: Report Name
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Construction = m
+		mode: import
+		source = ```
+				let
+				    // Load the Excel file
+				    Source = Excel.Workbook(File.Contents("C:\Users\farid.shahbalayev\Desktop\Power BI\Guy Carpenter\All Other Comparison Report.xlsx"), null, false),
+				    
+				    // Load the Construction sheet
+				    Construction_sheet = Source{[Item="Construction",Kind="Sheet"]}[Data],
+				    
+				    // Extract the client name from cell B3 and report date from cell A2
+				    ClientName = Construction_sheet{2}[Column2],
+				    ReportDate = Construction_sheet{1}[Column1],
+				    
+				    // Extract the report name from the Cover sheet, 2nd column, 14th row
+				    Cover_Sheet = Source{[Item="Cover",Kind="Sheet"]}[Data],
+				    Cover_Changed_Type = Table.TransformColumnTypes(Cover_Sheet,{{"Column1", type date}, {"Column2", type text}}),
+				    ReportName = Cover_Changed_Type{13}[Column2],  // Rows are zero-indexed, so row 14 is index 13
+				    
+				    // Filter out null and whitespace values
+				    FilterNullAndWhitespace = each List.Select(_, each _ <> null and (not (_ is text) or Text.Trim(_) <> "")),
+				    
+				    // Add custom columns to identify empty rows and sections
+				    #"Added Custom" = Table.AddColumn(Construction_sheet, "IsEmptyRow", each try List.IsEmpty(FilterNullAndWhitespace(Record.FieldValues(_))) otherwise false),
+				    #"Added Index" = Table.AddIndexColumn(#"Added Custom", "Index", -1),
+				    #"Added Custom1" = Table.AddColumn(#"Added Index", "Section", each if [IsEmptyRow] then -1 else if try #"Added Index"[IsEmptyRow]{[Index]} otherwise true then [Index] else null),
+				    
+				    // Remove blank rows and fill down section values
+				    #"Removed Blank Rows" = Table.SelectRows(#"Added Custom1", each not [IsEmptyRow]),
+				    #"Filled Down" = Table.FillDown(#"Removed Blank Rows", {"Section"}),
+				    
+				    // Group rows by section and select the relevant group
+				    #"Grouped Rows" = Table.Group(#"Filled Down", {"Section"}, {{"Rows", each _}}, GroupKind.Local),
+				    #"Selected Group" = #"Grouped Rows"[Rows]{1},
+				    
+				    // Remove unnecessary columns and rows
+				    #"Removed Columns" = Table.RemoveColumns(#"Selected Group", {"IsEmptyRow", "Index", "Section"}),
+				    #"Removed Top Rows" = Table.Skip(#"Removed Columns", each try List.IsEmpty(List.Skip(FilterNullAndWhitespace(Record.FieldValues(_)), 2)) otherwise false),
+				    #"Transposed Table" = Table.Transpose(#"Removed Top Rows"),
+				    #"Removed Top Rows1" = Table.Skip(#"Transposed Table", each try List.IsEmpty(List.Skip(FilterNullAndWhitespace(Record.FieldValues(_)), 1)) otherwise false),
+				    #"Transposed Table1" = Table.Transpose(#"Removed Top Rows1"),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Transposed Table1",{"Column1", "Column2", "Column3", "Column4", "Column5", "Column6", "Column7", "Column8", "Column9", "Column10", "Column11", "Column12", "Column13", "Column14", "Column15"}),
+				    
+				    // Filter rows and promote headers
+				    #"Filtered Rows" = Table.SelectRows(#"Removed Other Columns1", each ([Column2] <> null)),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Filtered Rows", [PromoteAllScalars=true]),
+				    
+				    // Change column types
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"Portfolio", type text}, {"Country", type text}, {"Construction", type text}, {"Geocoded Sums Insured", type number}, {"Geocoded Sums Insured_1", type number}}),
+				    #"Filled Down1" = Table.FillDown(#"Changed Type1",{"Portfolio"}),
+				    
+				    // Rename columns
+				    #"Renamed Columns" = Table.RenameColumns(#"Filled Down1",{{"Geocoded Sums Insured", "Previous Year"}, {"Geocoded Sums Insured_1", "Current Year"}}),
+				    
+				    // Add custom columns for client name, report date, report name, and exhibit
+				    #"Added Custom2" = Table.AddColumn(#"Renamed Columns", "Client Name", each ClientName),
+				    #"Added Custom3" = Table.AddColumn(#"Added Custom2", "Report Date", each ReportDate),
+				    #"Added Custom4" = Table.AddColumn(#"Added Custom3", "Report Name", each ReportName),
+				    #"Added Custom5" = Table.AddColumn(#"Added Custom4", "Exhibit", each "Known Construction"),
+				    
+				    // Rename additional columns and change types
+				    #"Renamed Columns2" = Table.RenameColumns(#"Added Custom5",{{"Construction", "Category"}, {"Ground-Up", "PY_Ground-Up"}, {"Gross", "PY_Gross"}, {"Net Pre-Cat", "PY_Net Pre-Cat"}, {"Ground-Up_4", "CY_Ground-Up"}, {"Gross_5", "CY_Gross"}, {"Net Pre-Cat_6", "CY_Net Pre-Cat"}, {"# Risks (Locations)", "# Risks (previous year)"}, {"Average SI", "Average SI (previous year)"}, {"# Risks (Locations)_2", "# Risks (current year)"}, {"Average SI_3", "Average SI (current year)"}}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Renamed Columns2",{{"PY_Ground-Up", type number}, {"PY_Gross", type number}, {"PY_Net Pre-Cat", type number}, {"CY_Ground-Up", type number}, {"CY_Gross", type number}, {"CY_Net Pre-Cat", type number}, {"Average SI (current year)", type number}, {"# Risks (current year)", type number}, {"Average SI (previous year)", type number}, {"# Risks (previous year)", type number}}),
+				    #"Replaced Errors" = Table.ReplaceErrorValues(#"Changed Type", {{"Average SI (previous year)", 0}}),
+				    #"Replaced Errors1" = Table.ReplaceErrorValues(#"Replaced Errors", {{"Average SI (current year)", 0}})
+				in
+				    #"Replaced Errors1"
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

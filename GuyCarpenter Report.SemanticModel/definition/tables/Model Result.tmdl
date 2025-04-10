@@ -1,0 +1,123 @@
+table 'Model Result'
+	lineageTag: a9b34173-69c5-4555-abdb-1e24707a0c2d
+
+	column 'Return Period'
+		dataType: string
+		lineageTag: e11e4dcf-b70a-4ceb-bf00-b8707202b211
+		summarizeBy: none
+		sourceColumn: Return Period
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PY_Ground Up Loss'
+		dataType: double
+		lineageTag: b0ac91a5-31c8-45a6-9f66-1f73f7c5fd5e
+		summarizeBy: sum
+		sourceColumn: PY_Ground Up Loss
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'CY_Ground Up Loss'
+		dataType: double
+		lineageTag: d4899413-1f00-410b-b616-21a500c61b85
+		summarizeBy: sum
+		sourceColumn: CY_Ground Up Loss
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'PY_Gross Loss'
+		dataType: double
+		lineageTag: 8d5147cf-5b22-4943-a6eb-0238ae388426
+		summarizeBy: sum
+		sourceColumn: PY_Gross Loss
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'CY_Gross Loss'
+		dataType: double
+		lineageTag: d3c20326-9a1b-437d-b866-135a0b3fa9b3
+		summarizeBy: sum
+		sourceColumn: CY_Gross Loss
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'PY_Net Loss'
+		dataType: double
+		lineageTag: 55751653-19c6-45ae-be8b-6e98804f42a4
+		summarizeBy: sum
+		sourceColumn: PY_Net Loss
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'CY_Net Loss'
+		dataType: double
+		lineageTag: c611e623-af72-4d52-a92e-faa589f197cc
+		summarizeBy: sum
+		sourceColumn: CY_Net Loss
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Portfolio
+		dataType: string
+		lineageTag: 49884363-c50a-47b3-90d0-de2d1d181575
+		summarizeBy: none
+		sourceColumn: Portfolio
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Client Name'
+		dataType: string
+		lineageTag: de802095-e392-4d0c-b14f-d9f1a9645267
+		summarizeBy: none
+		sourceColumn: Client Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Report Date'
+		dataType: string
+		lineageTag: 9c500630-c7d9-43d2-a15a-0fd81f0c73c4
+		summarizeBy: none
+		sourceColumn: Report Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Report Name'
+		dataType: string
+		lineageTag: de67de1e-96c3-4294-a148-a387192ec1a8
+		summarizeBy: none
+		sourceColumn: Report Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Exhibit
+		dataType: string
+		lineageTag: 19404bb3-da4f-407b-8a66-994f3950a3eb
+		summarizeBy: none
+		sourceColumn: Exhibit
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Model Result' = m
+		mode: import
+		source =
+				let
+				    Source = Table.Combine({#"Model Result - Other - HU US LTxSS", #"Model Result - Other - Other - EQFF US"})
+				in
+				    Source
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
